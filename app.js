@@ -4,7 +4,6 @@ const request = require('request');
 const path = require('path');
 const oAuthToken = require('./auth/spotifyTokens.js')
 
-
 //Init app
 const app = express();
 
