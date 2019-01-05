@@ -4,6 +4,10 @@ const request = require('request');
 const path = require('path');
 const oAuthToken = require('./auth/spotifyTokens.js')
 
+//Authentication IDs
+const client_id = '34b5994840a04dca8f147be844040dfb'
+const client_secret = '2be30b23d5484c599f00724807e1d8c1'
+
 //Init app
 const app = express();
 
