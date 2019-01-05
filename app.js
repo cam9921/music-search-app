@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
     res.render('search');
 });
 
+//Route to search for artists.
 app.get('/results', (req, res) => {
     const query = req.query.search;
 
@@ -36,42 +37,49 @@ app.get('/results', (req, res) => {
         console.log(response.statusCode)
         if(!error && response.statusCode == 200) {
             const data = JSON.parse(body);
-            console.log(data)
             if(!data["Error"]) {
                 res.render('results', {artists: data.artists.items, error: '', title: query});
-                console.log(data.artists.items)
              } else {
                 console.log(response);
                 // res.render('results', {data:{}, error: data["Error"]});
             }
         };
     });
-    
-    // Future, for getting more about a specific artist. 
-    // const aristsIDs = '0oSGxfWSnnOXhD2fKuz2Gy%2C3dBVyJ7JuOMt4GE9607Qin'
-    // const options = {
-    //     url: `https://api.spotify.com/v1/artists?ids=${aristsIDs}`,
-    //     headers: {
-    //         "Accept": "application/json",
-    //         "Content-Type": "application/json",
-    //         "Authorization": oAuthToken
-    //     }
-    // };
-
-    // request(options, (error, response, body) => {
-    //     console.log(response.statusCode)
-    //     if(!error && response.statusCode == 200) {
-    //         const data = JSON.parse(body);
-    //         if(!data["Error"]) {
-    //             // res.render('results', {data: data, error: ''});
-    //             console.log(data)
-    //          } else {
-    //             console.log(data["Error"]);
-    //             // res.render('results', {data:{}, error: data["Error"]});
-    //         }
-    //     };
-    // });
 });
+
+//Route to show artist details
+app.get('/artist/:artistid', (req, res) => {
+    const artistID = req.params.artistid;
+
+    const artistInfoQuery = {
+        url: `https://api.spotify.com/v1/artists?ids=${artistID}`,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": oAuthToken
+        }
+    };
+
+    request(artistInfoQuery, (error, response, body) => {
+        if(!error && response.statusCode == 200) {
+            const data = JSON.parse(body);
+            // console.log(data)
+            if(!data["Error"]) {
+                const artistData = data.artists[0]
+                console.log(artistData)
+                res.render('artist_details', {artist: artistData, error: ''});
+            } else {
+                console.log(data["Error"]);
+                // res.render('results', {data:{}, error: data["Error"]});
+            }
+        };
+    });
+});
+
+//Authentication token request route.
+// app.post('', () => {
+
+// })
 
 //Start server
 app.listen(3000, () => {

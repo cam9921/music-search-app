@@ -1,7 +1,8 @@
 extends layout
 
 block content
-    h1 #{title}
+    h1 Search results for: #{title}
     ul.artist-list
         each artist, i in artists
-            li.artist-list-item= artist.name
+            a(href=`/artist/`+artist.id)= artist.name
+            br
