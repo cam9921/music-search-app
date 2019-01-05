@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 Search for an Artist:
+
+    form(action="/results", method='GET')
+        input(type="text", placeholder="search an artist", name="search")
+        input(type="submit")

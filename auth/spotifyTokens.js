@@ -1,0 +1,5 @@
+const oAuthToken = 'Bearer BQAzc8Pa_3F4-vdDmn-wfIp7bZYEADU0VgLKz00WsLMjxOipkk-I6TIaMLU9VvDOpCyrSo-wM1p94Ig42MRFfFY4h5k2ds1KDa86oWGxBYPvc7QJIR5MLT5UZR9g4aMt4E4dq_NGVb9QUG_I9v64y2y1hiu0KA37tvG16endebOx40vb5A5_ptBhY9SIBT5-BJTJizqMIeQWscxNjYClmv6p3kcM8mNLckxyMjA1iByBiZXpVrdpBHQ_VMCivleTCC0josQIAO2WnhkghWs'
+
+
+
+module.exports = oAuthToken;

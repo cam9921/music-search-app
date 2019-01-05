@@ -28,6 +28,7 @@
   "homepage": "https://github.com/cam9921/music-search-app#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "request": "^2.88.0"
   }
 }
