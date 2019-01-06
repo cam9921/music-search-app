@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    h1 Albums
+        br
+        br
+        ul.album-list
+            each album, i in albumData
+                img(src=album.images[0].url)
+                br
+                p #{album.name}
+                br
+                p Released: #{album.release_date}
+                br
+                a(href=album.external_urls.spotify) Listen on Spotify
+                br

@@ -69,8 +69,40 @@ app.get('/artist/:artistid', (req, res) => {
             // console.log(data)
             if(!data["Error"]) {
                 const artistData = data.artists[0]
-                console.log(artistData)
-                res.render('artist_details', {artist: artistData, error: ''});
+                const artistImg = artistData.images[0];
+                if(!artistImg) {
+                    artistImgURL = 'https://dazedimg-dazedgroup.netdna-ssl.com/786/azure/dazed-prod/1120/0/1120288.jpg'
+                } else {
+                    artistImgURL = artistImg.url;
+                }
+                res.render('artist_details', {artist: artistData, error: '', img: artistImgURL});
+            } else {
+                console.log(data["Error"]);
+                // res.render('results', {data:{}, error: data["Error"]});
+            }
+        };
+    });
+});
+
+//Get albums for artist route
+app.get('/albums/:artistid', (req, res) => {
+    const artistID = req.params.artistid;
+
+    const albumsQuery = {
+        url: `https://api.spotify.com/v1/artists/${artistID}/albums`,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": oAuthToken
+        }
+    };
+
+    request(albumsQuery, (error, response, body) => {
+        if(!error && response.statusCode == 200) {
+            const data = JSON.parse(body);
+            if(!data["Error"]) {
+                const albumData= data.items;
+                res.render('album_list', {albumData: albumData, error: ''});
             } else {
                 console.log(data["Error"]);
                 // res.render('results', {data:{}, error: data["Error"]});

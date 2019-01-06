@@ -4,9 +4,9 @@ block content
     h1 #{artist.name}
         br
         br
-        img(src=artist.images[0].url, alt="")
+        img(src=img)
         p Genres: #{artist.genres}
         br
         a(href=artist.external_urls.spotify) Listen on Spotify
         br
-        a(href="#") View Albums
+        a(href="/albums/"+artist.id) View Albums
