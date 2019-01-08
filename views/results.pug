@@ -4,5 +4,5 @@ block content
     h1 Search results for: #{title}
     ul.artist-list
         each artist, i in artists
-            a(href=`/artist/`+artist.id)= artist.name
+            a(href=`/artist/${artist.id}/access=${accessToken}`)= artist.name
             br
