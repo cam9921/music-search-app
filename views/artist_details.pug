@@ -9,4 +9,4 @@ block content
         br
         a(href=artist.external_urls.spotify) Listen on Spotify
         br
-        a(href="/albums/"+artist.id) View Albums
+        a(href=`/albums/${artist.id}/access=${accessToken}`) View Albums

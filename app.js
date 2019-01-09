@@ -117,7 +117,7 @@ app.get('/results/access=:accessToken', (req, res) => {
 //Route to show artist details
 app.get('/artist/:artistid/access=:accessToken', (req, res) => {
     const artistID = req.params.artistid;
-    const accessToken = `Bearer ${req.params.accessToken}`;
+    const accessToken = `${req.params.accessToken}`;
 
     const artistInfoQuery = {
         url: `https://api.spotify.com/v1/artists?ids=${artistID}`,
@@ -140,7 +140,12 @@ app.get('/artist/:artistid/access=:accessToken', (req, res) => {
                 } else {
                     artistImgURL = artistImg.url;
                 }
-                res.render('artist_details', {artist: artistData, error: '', img: artistImgURL});
+                res.render('artist_details', {
+                    artist: artistData, 
+                    error: '', 
+                    img: artistImgURL, 
+                    accessToken: accessToken
+                });
             } else {
                 console.log(data["Error"]);
                 // res.render('results', {data:{}, error: data["Error"]});
@@ -150,24 +155,30 @@ app.get('/artist/:artistid/access=:accessToken', (req, res) => {
 });
 
 //Get albums for artist route
-app.get('/albums/:artistid', (req, res) => {
+app.get('/albums/:artistid/access=:accessToken', (req, res) => {
     const artistID = req.params.artistid;
+    const accessToken = req.params.accessToken;
+    console.log(artistID, accessToken)
 
     const albumsQuery = {
         url: `https://api.spotify.com/v1/artists/${artistID}/albums`,
         headers: {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": oAuthToken
+            "Authorization": accessToken
         }
     };
 
     request(albumsQuery, (error, response, body) => {
         if(!error && response.statusCode == 200) {
+            console.log(body)
             const data = JSON.parse(body);
             if(!data["Error"]) {
                 const albumData= data.items;
-                res.render('album_list', {albumData: albumData, error: ''});
+                res.render('album_list', {
+                    albumData: albumData, 
+                    error: ''
+                });
             } else {
                 console.log(data["Error"]);
                 // res.render('results', {data:{}, error: data["Error"]});
