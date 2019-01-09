@@ -6,8 +6,8 @@ const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
 //Authentication IDs
-const client_id = '34b5994840a04dca8f147be844040dfb'; // Your client id
-const client_secret = '2be30b23d5484c599f00724807e1d8c1'; // Your secret
+const client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 const redirect_uri = 'http://localhost:3000/callback/'; // Your redirect uri
 
 //Init app
@@ -19,26 +19,20 @@ app.set('view engine', 'pug');
 
 //Add routes
 app.get('/', (req, res) => {
-    res.render('login_prompt'); // Make login prompt template with 
+    res.render('login_prompt');  
 });
 
 //Add routes
 app.get('/search/:accessToken', (req, res) => {
-    // console.log(req.params.accessToken);
     const accessToken = req.params.accessToken;
     res.render('search', {accessToken: accessToken});
 });
-
-// let redirect_uri = 
-//   process.env.REDIRECT_URI || 
-//   'http://localhost:8888/callback'
 
 app.get('/login', function(req, res) {
   console.log(client_id, redirect_uri);
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-    //   client_id: process.env.SPOTIFY_CLIENT_ID, // Proper way to bring in variables, declare in command line
       client_id: client_id,
       scope: 'user-read-private user-read-email',
       redirect_uri
@@ -56,20 +50,14 @@ app.get('/callback', function(req, res) {
     },
     headers: {
       'Authorization': 'Basic ' + (new Buffer(
-        // process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET // Again, do this when you declare vars in command line
         client_id + ':' + client_secret
-        // `${client_id}:${client_secret}`
       ).toString('base64'))
     },
     json: true
   }
-  console.log(code, authOptions)
   request.post(authOptions, function(error, response, body) {
     var access_token = body.access_token
-    console.log(access_token)
-    // let uri = process.env.FRONTEND_URI || 'http://localhost:3000' // The example this code was pulled from redirects to a react app running on port 3000
-    //                                                                  We are going to try to do it all in express.. let's see how it goes!
-    // res.redirect(uri + '?access_token=' + access_token)
+
     res.redirect(`/search/${access_token}`)
   })
 })
@@ -93,7 +81,6 @@ app.get('/results/access=:accessToken', (req, res) => {
     };
 
     request(artistQuery, (error, response, body) => {
-        console.log(response.statusCode)
         if(!error && response.statusCode == 200) {
             const data = JSON.parse(body);
             if(!data["Error"]) {
@@ -128,7 +115,6 @@ app.get('/artist/:artistid/access=:accessToken', (req, res) => {
     request(artistInfoQuery, (error, response, body) => {
         if(!error && response.statusCode == 200) {
             const data = JSON.parse(body);
-            // console.log(data)
             if(!data["Error"]) {
                 const artistData = data.artists[0]
                 const artistImg = artistData.images[0];
@@ -155,7 +141,6 @@ app.get('/artist/:artistid/access=:accessToken', (req, res) => {
 app.get('/albums/:artistid/access=:accessToken', (req, res) => {
     const artistID = req.params.artistid;
     const accessToken = req.params.accessToken;
-    console.log(artistID, accessToken)
 
     const albumsQuery = {
         url: `https://api.spotify.com/v1/artists/${artistID}/albums`,
@@ -168,7 +153,6 @@ app.get('/albums/:artistid/access=:accessToken', (req, res) => {
 
     request(albumsQuery, (error, response, body) => {
         if(!error && response.statusCode == 200) {
-            console.log(body)
             const data = JSON.parse(body);
             if(!data["Error"]) {
                 const albumData= data.items;
@@ -182,6 +166,40 @@ app.get('/albums/:artistid/access=:accessToken', (req, res) => {
             }
         };
     });
+});
+
+//Add user profile route
+app.get('/myProfile/access=:accessToken', (req, res) => {
+    const accessToken = `Bearer ${req.params.accessToken}`;
+    console.log(accessToken)
+
+    const userQuery = {
+        url: `https://api.spotify.com/v1/me`,
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": accessToken
+        }
+    };
+
+    request(userQuery, (error, response, body) => {
+        if(!error && response.statusCode == 200) {
+            const data = JSON.parse(body);
+            console.log(data)
+            res.send('Your Profile!')
+            // if(!data["Error"]) {
+            //     const albumData= data.items;
+            //     res.render('album_list', {
+            //         albumData: albumData, 
+            //         error: ''
+            //     });
+            // } else {
+            //     console.log(data["Error"]);
+            //     // res.render('results', {data:{}, error: data["Error"]});
+            // }
+        };
+    });
+
 });
 
 //Start server

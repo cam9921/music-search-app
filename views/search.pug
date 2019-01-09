@@ -6,4 +6,5 @@ block content
     form(action=`/results/access=${accessToken}`, method='GET')
         input(type="text", placeholder="search an artist", name="search")
         input(type="submit")
-    p= accessKey
+    br
+    a(href=`/myProfile/access=${accessToken}`) My Profile
