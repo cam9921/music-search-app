@@ -3,10 +3,7 @@ const express = require('express');
 const request = require('request');
 const path = require('path');
 const querystring = require('querystring');
-var cookieParser = require('cookie-parser');
-// let access_token = '';
-// let refresh_token = '';
-const oAuthToken = require('./auth/spotifyTokens.js')
+const cookieParser = require('cookie-parser');
 
 //Authentication IDs
 const client_id = '34b5994840a04dca8f147be844040dfb'; // Your client id
